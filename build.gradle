@@ -10,6 +10,7 @@ buildscript {
     }
 }
 plugins {
+    id "com.commercehub.cucumber-jvm" version "0.14"
     id 'com.palantir.docker' version '0.20.1'
     id 'com.avast.gradle.docker-compose' version "0.8.12"
 }
@@ -27,6 +28,29 @@ group = "com.pillar"
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
+String integrationTestBaseUrl = "http://localhost:8080"
+
+addCucumberSuite 'cucumberTest'
+cucumberTest {
+    stepDefinitionRoots = ['com.pillar']
+    tags = ["not @wip"]
+    systemProperties = [
+            "integration-endpoint": integrationTestBaseUrl
+    ]
+}
+
+sourceSets {
+    intTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    intTestImplementation.extendsFrom testImplementation
+    intTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
 repositories {
     mavenCentral()
 }
@@ -37,6 +61,8 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-actuator'
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+    cucumberTestCompile 'io.cucumber:cucumber-java:4.2.0'
+    cucumberTestCompile 'io.cucumber:cucumber-junit:4.2.0'
 }
 
 docker {
@@ -56,6 +82,11 @@ tasks.composeUp.dependsOn('docker')
 
 task mongoSetup(dependsOn: 'composeUp') {}
 task mongoTeardown(dependsOn: 'composeDown') {}
+
+cucumberTest.dependsOn('mongoSetup')
+cucumberTest.finalizedBy('mongoTeardown')
+
+check.dependsOn tasks.cucumberTest
 
 
 

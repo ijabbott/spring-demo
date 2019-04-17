@@ -1,4 +1,4 @@
-package demo;
+package com.pillar.demo;
 
 import org.springframework.data.annotation.Id;
 
