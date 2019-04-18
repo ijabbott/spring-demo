@@ -1,4 +1,4 @@
-package com.pillar.demo;
+package com.pillar;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

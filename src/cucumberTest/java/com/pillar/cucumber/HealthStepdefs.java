@@ -1,5 +1,8 @@
-package com.pillar.demo;
+package com.pillar.cucumber;
 
+import com.pillar.Customer;
+import com.pillar.CustomerApiController;
+import com.pillar.CustomerRepository;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -19,13 +22,16 @@ import static junit.framework.TestCase.assertTrue;
 public class HealthStepdefs {
     private final WebClient client;
 
+    @Autowired
+    CustomerRepository repo;
+
     private Customer customerOne;
 
     private HttpStatus status;
     private Map body;
 
     public HealthStepdefs() {
-        final String endpoint = System.getProperty("integration-endpoint", "http://localhost:8080");
+        final String endpoint = System.getProperty("unit-endpoint", "http://localhost:8080");
         client = WebClient.create(endpoint);
     }
 

@@ -1,4 +1,4 @@
-package com.pillar.demo;
+package com.pillar;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -6,11 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.util.UriBuilder;
-
-import java.net.URI;
-import java.util.Map;
-import java.util.function.Function;
 
 @RestController
 @RequestMapping("/api/customer")
@@ -32,8 +27,11 @@ public class CustomerApiController {
 //        final String lastName = customer.lastName;
 //
 //        final Customer newCustomer = customerRespository.findByFirstName(firstName).orElseGet(() -> customerRespository.save(new Customer(firstName, lastName)));
+        if(customer == null || (customer.firstName.isEmpty() && customer.lastName.isEmpty())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(customer, HttpStatus.CREATED);
 
     }
 

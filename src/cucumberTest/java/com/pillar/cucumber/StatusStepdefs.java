@@ -1,4 +1,4 @@
-package com.pillar.demo;
+package com.pillar.cucumber;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -21,7 +21,7 @@ public class StatusStepdefs {
     @Given("the health endpoint")
     public void theHealthEndpoint() {
 
-        endpoint = System.getProperty("integration-endpoint", "http://localhost:8080");
+        endpoint = System.getProperty("unit-endpoint", "http://localhost:8080");
     }
 
     @When("I request the status")

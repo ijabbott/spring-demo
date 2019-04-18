@@ -35,7 +35,7 @@ cucumberTest {
     stepDefinitionRoots = ['com.pillar']
     tags = ["not @wip"]
     systemProperties = [
-            "integration-endpoint": integrationTestBaseUrl
+            "unit-endpoint": integrationTestBaseUrl
     ]
 }
 
