@@ -7,16 +7,16 @@ services:
     depends_on:
       - "mongodb"
     networks:
-      - aclifton
+      - spring-demo-bridge
 
   mongodb:
     image: 'mongo:latest'
     restart: always
     networks:
-      - aclifton
+      - spring-demo-bridge
     ports:
       - "27017:27017"
 
 networks:
-  aclifton:
+  spring-demo-bridge:
     external: true

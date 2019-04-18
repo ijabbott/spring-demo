@@ -9,7 +9,7 @@ count=0
 while [ $count -lt $MAX_RETRY ]
 do
     count=$((count+1))
-    nc -z 192.168.0.1 $PORT
+    nc -z 10.17.0.1 $PORT
     result=$?
     if [ $result -eq 0 ]; then
         echo "Connection is available after $count second(s)."
