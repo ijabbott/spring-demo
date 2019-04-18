@@ -6,9 +6,17 @@ services:
       - "8080:8080"
     depends_on:
       - "mongodb"
+    networks:
+      - spring-demo-bridge
 
   mongodb:
     image: 'mongo:latest'
     restart: always
+    networks:
+      - spring-demo-bridge
     ports:
       - "27017:27017"
+
+networks:
+  spring-demo-bridge:
+    external: true
