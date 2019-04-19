@@ -1,8 +1,5 @@
 package com.pillar;
 
-import com.pillar.Customer;
-import com.pillar.CustomerApiController;
-import com.pillar.CustomerRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Optional;
+
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.mock;
 @RunWith(SpringRunner.class)
 public class TestCustomerApiController {
     private CustomerApiController controller;
+    Customer customer = new Customer("Awesome", "Customer");
 
     @Autowired
     private CustomerRepository repo;
@@ -29,35 +31,34 @@ public class TestCustomerApiController {
     @Before
     public void setup() {
         repo = mock(CustomerRepository.class);
+        when(repo.findByFirstName("Awesome")).thenReturn(Optional.of(customer));
+        when(repo.save(any())).thenReturn(customer);
+
         controller = new CustomerApiController(repo);
     }
 
     @Test
     public void givenCreatingCustomerWhenGoodCustomerRequestThenReturnsOk() {
         Customer customer = new Customer("Awesome", "Customer");
-        ResponseEntity<Customer> response = controller.create(customer);
+        ResponseEntity<Customer> response = controller.addCustomer(customer);
         HttpStatus statusCode = response.getStatusCode();
         assertEquals(HttpStatus.CREATED, statusCode);
     }
 
     @Test
-    public void healthEndpointReturnsOk() {
-        ResponseEntity<String> response = controller.health();
-        HttpStatus statusCode = response.getStatusCode();
-        assertEquals(HttpStatus.OK, statusCode);
-    }
-
-    @Test
     public void givenCreatingCustomerWhenGoodCustomerRequestThenReturnsCustomer() {
         Customer customer = new Customer("Awesome", "Customer");
-        ResponseEntity<Customer> response = controller.create(customer);
+        ResponseEntity<Customer> response = controller.addCustomer(customer);
         Customer actualCustomer = response.getBody();
-        assertEquals(customer, actualCustomer);
+        assertEquals(customer.id, actualCustomer.id);
+        assertEquals(customer.firstName, actualCustomer.firstName);
+        assertEquals(customer.lastName, actualCustomer.lastName);
+
     }
 
     @Test
     public void givenCreatingCustomerWhenNullThenReturnsBadRequest() {
-        ResponseEntity<Customer> response = controller.create(null);
+        ResponseEntity<Customer> response = controller.addCustomer(null);
         HttpStatus statusCode = response.getStatusCode();
         assertEquals(HttpStatus.BAD_REQUEST, statusCode);
     }
@@ -65,7 +66,7 @@ public class TestCustomerApiController {
     @Test
     public void givenCreatingCustomerWhenEmptyThenReturnsBadRequest() {
         Customer customer = new Customer("", "");
-        ResponseEntity<Customer> response = controller.create(customer);
+        ResponseEntity<Customer> response = controller.addCustomer(customer);
         HttpStatus statusCode = response.getStatusCode();
         assertEquals(HttpStatus.BAD_REQUEST, statusCode);
     }

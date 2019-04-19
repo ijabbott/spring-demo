@@ -33,12 +33,7 @@ public class StatusStepdefs {
 
     @Then("I receive an {string}")
     public void iReceiveAn(String status) {
-        if (status.equals("OK")) {
-            HttpStatus httpStatus = response.block().statusCode();
-            assertEquals(httpStatus, HttpStatus.OK);
-        } else {
-            log.error("Unknown status to query for: " + status);
-            throw new cucumber.api.PendingException();
-        }
+        String httpStatus = response.block().statusCode().getReasonPhrase();
+        assertEquals(status, httpStatus);
     }
 }

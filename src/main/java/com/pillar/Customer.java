@@ -6,7 +6,7 @@ public class Customer {
     @Id
     public String id;
 
-    public static String firstName;
+    public String firstName;
 
     public String lastName;
 
